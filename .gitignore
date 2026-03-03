@@ -1,0 +1,51 @@
+# Backend
+backend/target/
+backend/*.log
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+backend/!.mvn/wrapper/maven-wrapper.jar
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build
+frontend/.env.local
+frontend/.env.production
+
+# Mobile (for later)
+mobile/node_modules/
+mobile/android/
+mobile/ios/
+mobile/build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Docker
+*.pid
+docker-compose.override.yml
