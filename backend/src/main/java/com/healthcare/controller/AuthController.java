@@ -16,6 +16,15 @@ public class AuthController {
     
     private final AuthService authService;
     
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello World";
+    }
+    
+
+
+
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         try {
