@@ -4,12 +4,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "users")
 @Data
 @NoArgsConstructor
 public class User {
+
+    private Instant passwordChangedAt;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
