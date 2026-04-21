@@ -12,6 +12,8 @@ import java.time.Instant;
 @NoArgsConstructor
 public class User {
 
+    private boolean enabled = false;
+    
     private Instant passwordChangedAt;
     
     @Id
