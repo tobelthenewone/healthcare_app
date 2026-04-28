@@ -1,21 +1,21 @@
 package com.healthcare.dto;
 
-import com.healthcare.model.UserRole;
-import lombok.Data;
 
-@Data
+import com.healthcare.model.UserRole;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AuthResponse {
-    private String token;
+
+    private String accessToken;
+    private String refreshToken;
     private String email;
     private String fullName;
     private UserRole role;
-    private Long id;
-    
-    public AuthResponse(String token, String email, String fullName, UserRole role, Long id) {
-        this.token = token;
-        this.email = email;
-        this.fullName = fullName;
-        this.role = role;
-        this.id = id;
-    }
+    private long userId;
 }
