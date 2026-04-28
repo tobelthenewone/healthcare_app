@@ -1,6 +1,7 @@
 package com.healthcare.security;
 
 import com.healthcare.model.User;
+import com.healthcare.repository.BlacklistedTokenRepository;
 import com.healthcare.repository.UserRepository;
 import com.healthcare.util.JwtUtil;
 import io.jsonwebtoken.Claims;
@@ -25,6 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
     private final UserRepository userRepository;
+    private final BlacklistedTokenRepository blacklistedTokenRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -39,6 +41,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Step 1: Extract token
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
+            if (blacklistedTokenRepository.existsByToken(jwt)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
             email = jwtUtil.extractEmail(jwt);
         }
 

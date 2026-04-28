@@ -1,5 +1,6 @@
 package com.healthcare.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,4 +20,5 @@ public interface PasswordResetTokenRepository extends JpaRepository<PasswordRese
     @Modifying
     @Transactional
     void deleteByUser(User user);
+    void deleteByExpiryDateBefore(LocalDateTime now);
 }

@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import com.healthcare.dto.UserProfileResponse;
-import com.healthcare.model.User;
 import com.healthcare.service.AdminService;
 
 import lombok.RequiredArgsConstructor;

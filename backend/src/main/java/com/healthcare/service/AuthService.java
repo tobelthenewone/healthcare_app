@@ -4,6 +4,7 @@ import java.util.UUID;
 import com.healthcare.dto.AuthResponse;
 import com.healthcare.dto.LoginRequest;
 import com.healthcare.dto.RegisterRequest;
+import com.healthcare.model.RefreshToken;
 import com.healthcare.model.User;
 import com.healthcare.model.VerificationToken;
 import com.healthcare.repository.UserRepository;
@@ -11,14 +12,20 @@ import com.healthcare.repository.VerificationTokenRepository;
 import com.healthcare.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-
+        private final RefreshTokenService refreshTokenService;
+        private final LoginAttemptService loginAttemptService;
+        private final AuthenticationManager authenticationManager;
         private final UserRepository userRepository;
         private final PasswordEncoder passwordEncoder;
         private final JwtUtil jwtUtil;
@@ -82,33 +89,55 @@ public class AuthService {
 
                 return new AuthResponse(
                                 jwtToken,
+                                null, // no refresh token on register
                                 user.getEmail(),
                                 user.getFullName(),
                                 user.getRole(),
                                 user.getId());
+
         }
 
         public AuthResponse login(LoginRequest request) {
 
                 User user = userRepository.findByEmail(request.getEmail())
-                                .orElseThrow(() -> new RuntimeException("User not found"));
-                if (!user.isEnabled()) {
-                        throw new RuntimeException("Please verify your email first");
-                }
-                if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-                        throw new RuntimeException("Invalid password");
+                                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+
+                if (!user.isAccountNonLocked()) {
+                        throw new RuntimeException("Account is locked. Try again later.");
                 }
 
-                // FIX: store token for loginn
-                String token = jwtUtil.generateToken(
-                                user.getEmail(),
-                                user.getPasswordChangedAt());
+                try {
+                        authenticationManager.authenticate(
+                                        new UsernamePasswordAuthenticationToken(
+                                                        request.getEmail(),
+                                                        request.getPassword()));
 
-                return new AuthResponse(
-                                token,
-                                user.getEmail(),
-                                user.getFullName(),
-                                user.getRole(),
-                                user.getId());
+                        // SUCCESS → reset attempts
+                        loginAttemptService.loginSucceeded(user);
+
+                        user.setLastLoginAt(LocalDateTime.now());
+                        userRepository.save(user);
+                        // Generate JWT and refresh token
+                        String accessToken = jwtUtil.generateToken(
+                                        user.getEmail(),
+                                        user.getPasswordChangedAt());
+
+                        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+
+                        return new AuthResponse(
+                                        accessToken,
+                                        refreshToken.getToken(),
+                                        user.getEmail(),
+                                        user.getFullName(),
+                                        user.getRole(),
+                                        user.getId());
+
+                } catch (BadCredentialsException ex) {
+
+                        // FAILED → increment attempts
+                        loginAttemptService.loginFailed(user);
+
+                        throw new RuntimeException("Invalid credentials");
+                }
         }
 }

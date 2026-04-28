@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.healthcare.model.User;
+
 import java.util.Collection;
 
 @AllArgsConstructor
@@ -14,6 +16,7 @@ public class CustomUserDetails implements UserDetails {
     private String fullName;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
+    private final User user;
 
     public Long getId() {
         return id;
@@ -39,7 +42,7 @@ public class CustomUserDetails implements UserDetails {
     }
 
     @Override public boolean isAccountNonExpired() { return true; }
-    @Override public boolean isAccountNonLocked() { return true; }
+    @Override public boolean isAccountNonLocked() { return user.isAccountNonLocked(); }
     @Override public boolean isCredentialsNonExpired() { return true; }
     @Override public boolean isEnabled() { return true; }
 }
