@@ -1,9 +1,10 @@
 package com.healthcare.service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.healthcare.repository.BlacklistedTokenRepository;
 import com.healthcare.repository.PasswordResetTokenRepository;
@@ -19,11 +20,11 @@ public class TokenCleanupService {
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final VerificationTokenRepository verificationTokenRepository;
 
+    @Transactional
     @Scheduled(fixedRate = 3600000) // every 1 hour
     public void cleanUpExpiredTokens() {
 
-        LocalDateTime now = LocalDateTime.now();
-
+        Instant now = Instant.now();
         blacklistedTokenRepository.deleteByExpiryDateBefore(now);
         passwordResetTokenRepository.deleteByExpiryDateBefore(now);
         verificationTokenRepository.deleteByExpiryDateBefore(now);

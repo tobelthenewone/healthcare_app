@@ -1,6 +1,6 @@
 package com.healthcare.repository;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,5 +11,5 @@ public interface BlacklistedTokenRepository extends JpaRepository<BlacklistedTok
 
     boolean existsByToken(String token);
 
-    void deleteByExpiryDateBefore(LocalDateTime now);
+    void deleteByExpiryDateBefore(Instant now);
 }

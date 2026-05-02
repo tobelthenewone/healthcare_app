@@ -12,7 +12,6 @@ import com.healthcare.repository.VerificationTokenRepository;
 import com.healthcare.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -115,7 +114,7 @@ public class AuthService {
                         // SUCCESS → reset attempts
                         loginAttemptService.loginSucceeded(user);
 
-                        user.setLastLoginAt(LocalDateTime.now());
+                        user.setLastLoginAt(Instant.now());
                         userRepository.save(user);
                         // Generate JWT and refresh token
                         String accessToken = jwtUtil.generateToken(

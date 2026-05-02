@@ -6,7 +6,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.time.Duration;
 import java.time.Instant;
 
 @Entity
@@ -20,7 +20,7 @@ public class User {
 
     private boolean accountNonLocked = true;
 
-    private LocalDateTime lockTime;
+    private Instant lockTime;
 
     public boolean isAccountNonLocked() {
         if (accountNonLocked) {
@@ -32,7 +32,7 @@ public class User {
         }
 
         // unlock after 15 minutes
-        if (lockTime.plusMinutes(10).isBefore(LocalDateTime.now())) {
+        if (lockTime.plus(Duration.ofMinutes(10)).isBefore(Instant.now())) {
             accountNonLocked = true;
             failedAttempts = 0;
             lockTime = null;
@@ -66,17 +66,17 @@ public class User {
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now();
+        createdAt = Instant.now();
     }
 
     @LastModifiedDate
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @Column(name = "last_login_at")
-    private LocalDateTime lastLoginAt;
+    private Instant lastLoginAt;
 }

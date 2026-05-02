@@ -1,7 +1,7 @@
 package com.healthcare.service;
 
+import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,7 +45,8 @@ public class PasswordResetService {
         PasswordResetToken resetToken = new PasswordResetToken(
                 hashedToken,
                 user,
-                LocalDateTime.now().plusMinutes(15));
+                Instant.now().plus(Duration.ofMinutes(15)));
+
 
         tokenRepository.save(resetToken);
 
@@ -80,7 +81,7 @@ public class PasswordResetService {
             throw new RuntimeException("Invalid token");
         }
 
-        if (matchedToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+        if (matchedToken.getExpiryDate().isBefore(Instant.now())) {
             throw new RuntimeException("Token expired");
         }
 

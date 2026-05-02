@@ -92,7 +92,7 @@ public class AuthController {
 
         BlacklistedToken blacklistedToken = new BlacklistedToken(
                 token,
-                expiry.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+                expiry.toInstant().atZone(ZoneId.systemDefault()).toInstant());
 
         blacklistedTokenRepository.save(blacklistedToken);
 
