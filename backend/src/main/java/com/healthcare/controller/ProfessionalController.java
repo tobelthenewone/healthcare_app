@@ -8,6 +8,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import com.healthcare.dto.UpdateAppointmentStatusRequest;
+
+import jakarta.validation.Valid;
+
 import com.healthcare.security.CustomUserDetails;
 import com.healthcare.dto.AppointmentResponse;
 import com.healthcare.model.User;
@@ -47,5 +51,23 @@ public class ProfessionalController {
     @GetMapping("/me")
     public String getMyData(@AuthenticationPrincipal CustomUserDetails user) {
         return "Fetching data for user ID: " + user.getId();
+    }
+
+    @PutMapping("/appointments/{appointmentId}/status")
+    public ResponseEntity<AppointmentResponse> updateAppointmentStatus(
+            @PathVariable Long appointmentId,
+            @Valid @RequestBody UpdateAppointmentStatusRequest request,
+            Authentication authentication) {
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        User professional = userDetails.getUser();
+
+        AppointmentResponse response = appointmentService.updateAppointmentStatus(
+                appointmentId,
+                request,
+                professional);
+
+        return ResponseEntity.ok(response);
     }
 }

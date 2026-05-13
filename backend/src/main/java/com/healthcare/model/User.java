@@ -68,15 +68,19 @@ public class User {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = Instant.now();
-    }
-
     @LastModifiedDate
     @Column(name = "updated_at")
     private Instant updatedAt;
 
     @Column(name = "last_login_at")
     private Instant lastLoginAt;
+
+
+    @PrePersist
+    public void prePersist() {
+
+        createdAt = Instant.now();
+
+        
+    }
 }
