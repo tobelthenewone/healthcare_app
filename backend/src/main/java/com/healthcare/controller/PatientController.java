@@ -14,7 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
+import com.healthcare.dto.ProfessionalResponse;
 import com.healthcare.dto.UpdateProfileRequest;
 import com.healthcare.dto.UserProfileResponse;
 import com.healthcare.dto.AppointmentResponse;
@@ -120,5 +120,12 @@ public class PatientController {
         List<AvailableSlotResponse> slots = appointmentService.getAvailableSlots(professionalId, date);
 
         return ResponseEntity.ok(slots);
+    }
+
+    @GetMapping("/professionals")
+    public ResponseEntity<List<ProfessionalResponse>> getProfessionals() {
+
+        return ResponseEntity.ok(
+                userService.getProfessionals());
     }
 }

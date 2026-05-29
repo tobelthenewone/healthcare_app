@@ -30,6 +30,14 @@ public class CustomUserDetails implements UserDetails {
         return user;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public String getRole() {
+        return user.getRole().name();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;

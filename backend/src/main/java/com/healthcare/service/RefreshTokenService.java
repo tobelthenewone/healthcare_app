@@ -32,7 +32,7 @@ public class RefreshTokenService {
         RefreshToken refreshToken = new RefreshToken(
                 user,
                 token,
-                Instant.now().plus(Duration.ofDays(7)));
+                Instant.now().plus(Duration.ofDays(1)));
 
         return refreshTokenRepository.save(refreshToken);
     }

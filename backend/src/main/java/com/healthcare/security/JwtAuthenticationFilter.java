@@ -18,6 +18,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import io.jsonwebtoken.ExpiredJwtException;
 
 @Component
 @RequiredArgsConstructor
@@ -35,52 +36,79 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
+
         String email = null;
         String jwt = null;
 
-        // Step 1: Extract token
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            jwt = authHeader.substring(7);
-            if (blacklistedTokenRepository.existsByToken(jwt)) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
-            }
-            email = jwtUtil.extractEmail(jwt);
-        }
+        try {
 
-        // Step 2: Validate and set authentication
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            // Step 1: Extract token
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                jwt = authHeader.substring(7);
 
-            if (jwtUtil.validateToken(jwt, userDetails.getUsername())) {
-
-                // Extract claims
-                Claims claims = jwtUtil.extractAllClaims(jwt);
-                Long tokenPwdChangedAt = claims.get("pwdChangedAt", Long.class);
-
-                // Get user from DB
-                User user = userRepository.findByEmail(email).orElseThrow();
-
-                if (user.getPasswordChangedAt() != null) {
-                    long userPwdChangedAt = user.getPasswordChangedAt().toEpochMilli();
-
-                    // Old token → reject
-                    if (tokenPwdChangedAt == null || tokenPwdChangedAt < userPwdChangedAt) {
-                        throw new RuntimeException("Token expired due to password change");
-                    }
+                if (blacklistedTokenRepository.existsByToken(jwt)) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
                 }
 
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities());
-
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request));
-
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                email = jwtUtil.extractEmail(jwt);
             }
+
+            // Step 2: Validate and set authentication
+            if (email != null &&
+                    SecurityContextHolder
+                            .getContext()
+                            .getAuthentication() == null) {
+
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+                if (jwtUtil.validateToken(
+                        jwt,
+                        userDetails.getUsername())) {
+
+                    // Extract claims
+                    Claims claims = jwtUtil.extractAllClaims(jwt);
+
+                    Long tokenPwdChangedAt = claims.get("pwdChangedAt", Long.class);
+
+                    // Get user from DB
+                    User user = userRepository
+                            .findByEmail(email)
+                            .orElseThrow();
+
+                    if (user.getPasswordChangedAt() != null) {
+
+                        long userPwdChangedAt = user.getPasswordChangedAt()
+                                .toEpochMilli();
+
+                        // Old token → reject
+                        if (tokenPwdChangedAt == null ||
+                                tokenPwdChangedAt < userPwdChangedAt) {
+                            throw new RuntimeException(
+                                    "Token expired due to password change");
+                        }
+                    }
+
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities());
+
+                    authToken.setDetails(
+                            new WebAuthenticationDetailsSource()
+                                    .buildDetails(request));
+
+                    SecurityContextHolder
+                            .getContext()
+                            .setAuthentication(authToken);
+                }
+            }
+
+        } catch (ExpiredJwtException e) {
+
+            logger.debug("JWT token expired");
+
         }
 
         filterChain.doFilter(request, response);

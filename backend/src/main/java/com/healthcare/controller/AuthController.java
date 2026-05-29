@@ -17,12 +17,14 @@ import com.healthcare.repository.BlacklistedTokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
+import com.healthcare.dto.CurrentUserResponse;
+import com.healthcare.security.CustomUserDetails;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -111,5 +113,20 @@ public class AuthController {
                 request.getToken(),
                 request.getNewPassword());
         return ResponseEntity.ok("Password reset successful");
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<CurrentUserResponse> getCurrentUser(
+            Authentication authentication) {
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        CurrentUserResponse response = new CurrentUserResponse(
+                userDetails.getId(),
+                userDetails.getEmail(),
+                userDetails.getFullName(),
+                userDetails.getRole());
+
+        return ResponseEntity.ok(response);
     }
 }
