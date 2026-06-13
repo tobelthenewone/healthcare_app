@@ -27,7 +27,8 @@ public class UserService {
                 user.getId(),
                 user.getFullName(),
                 user.getEmail(),
-                user.getRole().name());
+                user.getRole().name(),
+                user.isEnabled());
     }
 
     public UserProfileResponse updateProfile(Long userId, UpdateProfileRequest request) {
@@ -42,7 +43,8 @@ public class UserService {
                 user.getId(),
                 user.getFullName(),
                 user.getEmail(),
-                user.getRole().name());
+                user.getRole().name(),
+                user.isEnabled());
     }
 
     public void changePassword(Long userId, ChangePasswordRequest request) {

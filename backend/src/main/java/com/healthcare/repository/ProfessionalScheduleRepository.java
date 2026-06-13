@@ -6,13 +6,16 @@ import com.healthcare.model.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ProfessionalScheduleRepository
-        extends JpaRepository<ProfessionalSchedule, Long> {
+                extends JpaRepository<ProfessionalSchedule, Long> {
 
-    Optional<ProfessionalSchedule> findByProfessionalAndDayOfWeek(
-            User professional,
-            DayOfWeekEnum dayOfWeek
-    );
+        Optional<ProfessionalSchedule> findByProfessionalAndDayOfWeek(
+                        User professional,
+                        DayOfWeekEnum dayOfWeek);
+
+        List<ProfessionalSchedule> findByProfessional(
+                        User professional);
 }

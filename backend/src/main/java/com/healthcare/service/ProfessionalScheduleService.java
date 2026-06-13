@@ -10,100 +10,104 @@ import com.healthcare.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class ProfessionalScheduleService {
 
-    private final ProfessionalScheduleRepository professionalScheduleRepository;
-    private final UserRepository userRepository;
+        private final ProfessionalScheduleRepository professionalScheduleRepository;
+        private final UserRepository userRepository;
 
-    public ProfessionalScheduleResponse updateSchedule(
-            Long professionalId,
-            UpdateProfessionalScheduleRequest request
-    ) {
+        public List<ProfessionalScheduleResponse> getSchedulesForProfessional(
+                        Long professionalId) {
 
-        User professional = userRepository.findById(professionalId)
-                .orElseThrow(() ->
-                        new RuntimeException("Professional not found")
-                );
+                User professional = userRepository.findById(professionalId)
+                                .orElseThrow(() -> new RuntimeException("Professional not found"));
 
-        if (professional.getRole() != UserRole.PROFESSIONAL) {
-            throw new RuntimeException("User is not a professional");
-        }
-
-        ProfessionalSchedule schedule =
-                professionalScheduleRepository
-                        .findByProfessionalAndDayOfWeek(
-                                professional,
-                                request.getDayOfWeek()
-                        )
-                        .orElseThrow(() ->
-                                new RuntimeException("Schedule not found")
-                        );
-
-        /*
-         * Validate working hours
-         */
-        if (request.getEnabled()) {
-
-            if (request.getStartHour() >= request.getEndHour()) {
-                throw new RuntimeException(
-                        "Start hour must be before end hour"
-                );
-            }
-
-            /*
-             * Validate break hours
-             */
-            if (request.getBreakStartHour() != null &&
-                    request.getBreakEndHour() != null) {
-
-                if (request.getBreakStartHour()
-                        >= request.getBreakEndHour()) {
-
-                    throw new RuntimeException(
-                            "Break start must be before break end"
-                    );
+                if (professional.getRole() != UserRole.PROFESSIONAL) {
+                        throw new RuntimeException("User is not a professional");
                 }
 
-                if (request.getBreakStartHour()
-                        < request.getStartHour()
-                        ||
-                        request.getBreakEndHour()
-                                > request.getEndHour()) {
-
-                    throw new RuntimeException(
-                            "Break must be inside working hours"
-                    );
-                }
-            }
+                return professionalScheduleRepository
+                                .findByProfessional(professional)
+                                .stream()
+                                .map(this::mapToResponse)
+                                .toList();
         }
 
-        schedule.setEnabled(request.getEnabled());
-        schedule.setStartHour(request.getStartHour());
-        schedule.setEndHour(request.getEndHour());
-        schedule.setBreakStartHour(request.getBreakStartHour());
-        schedule.setBreakEndHour(request.getBreakEndHour());
+        public ProfessionalScheduleResponse updateSchedule(
+                        Long professionalId,
+                        UpdateProfessionalScheduleRequest request) {
 
-        ProfessionalSchedule updated =
-                professionalScheduleRepository.save(schedule);
+                User professional = userRepository.findById(professionalId)
+                                .orElseThrow(() -> new RuntimeException("Professional not found"));
 
-        return mapToResponse(updated);
-    }
+                if (professional.getRole() != UserRole.PROFESSIONAL) {
+                        throw new RuntimeException("User is not a professional");
+                }
 
-    private ProfessionalScheduleResponse mapToResponse(
-            ProfessionalSchedule schedule
-    ) {
+                ProfessionalSchedule schedule = professionalScheduleRepository
+                                .findByProfessionalAndDayOfWeek(
+                                                professional,
+                                                request.getDayOfWeek())
+                                .orElseThrow(() -> new RuntimeException("Schedule not found"));
 
-        return ProfessionalScheduleResponse.builder()
-                .dayOfWeek(schedule.getDayOfWeek())
-                .enabled(schedule.isEnabled())
-                .startHour(schedule.getStartHour())
-                .endHour(schedule.getEndHour())
-                .breakStartHour(schedule.getBreakStartHour())
-                .breakEndHour(schedule.getBreakEndHour())
-                .build();
-    }
+                /*
+                 * Validate working hours
+                 */
+                if (request.getEnabled()) {
+
+                        if (request.getStartHour() >= request.getEndHour()) {
+                                throw new RuntimeException(
+                                                "Start hour must be before end hour");
+                        }
+
+                        /*
+                         * Validate break hours
+                         */
+                        if (request.getBreakStartHour() != null &&
+                                        request.getBreakEndHour() != null) {
+
+                                if (request.getBreakStartHour() >= request.getBreakEndHour()) {
+
+                                        throw new RuntimeException(
+                                                        "Break start must be before break end");
+                                }
+
+                                if (request.getBreakStartHour() < request.getStartHour()
+                                                ||
+                                                request.getBreakEndHour() > request.getEndHour()) {
+
+                                        throw new RuntimeException(
+                                                        "Break must be inside working hours");
+                                }
+                        }
+                }
+
+                schedule.setEnabled(request.getEnabled());
+                schedule.setStartHour(request.getStartHour());
+                schedule.setEndHour(request.getEndHour());
+                schedule.setBreakStartHour(request.getBreakStartHour());
+                schedule.setBreakEndHour(request.getBreakEndHour());
+
+                ProfessionalSchedule updated = professionalScheduleRepository.save(schedule);
+
+                return mapToResponse(updated);
+        }
+
+        private ProfessionalScheduleResponse mapToResponse(
+                        ProfessionalSchedule schedule) {
+
+                return ProfessionalScheduleResponse.builder()
+                                .dayOfWeek(schedule.getDayOfWeek())
+                                .enabled(schedule.isEnabled())
+                                .startHour(schedule.getStartHour())
+                                .endHour(schedule.getEndHour())
+                                .breakStartHour(schedule.getBreakStartHour())
+                                .breakEndHour(schedule.getBreakEndHour())
+                                .build();
+        }
 }

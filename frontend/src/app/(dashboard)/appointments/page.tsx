@@ -7,7 +7,9 @@ import appointmentService from "@/services/appointment-service";
 import { AppointmentResponse } from "@/types/appointment";
 
 import StatusBadge from "@/components/appointments/status-badge";
-import { RESPONSE_LIMIT_DEFAULT } from "next/dist/server/api-utils";
+
+import RoleGuard from "@/components/auth/role-guard";
+
 
 export default function AppointmentsPage() {
   const [appointments, setAppointments] = useState<AppointmentResponse[]>([]);
@@ -64,8 +66,9 @@ export default function AppointmentsPage() {
   }
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6">My Appointments</h1>
+    <RoleGuard allowedRoles={["PATIENT"]}>
+      <div>
+        <h1 className="text-3xl font-bold mb-6">My Appointments</h1>
 
       <div className="space-y-4">
         {appointments.map((appointment) => (
@@ -108,5 +111,6 @@ export default function AppointmentsPage() {
         ))}
       </div>
     </div>
+    </RoleGuard>
   );
 }

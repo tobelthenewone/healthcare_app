@@ -2,14 +2,9 @@ interface StatusBadgeProps {
   status: string;
 }
 
-export default function StatusBadge({
-  status,
-}: StatusBadgeProps) {
-
+export default function StatusBadge({ status }: StatusBadgeProps) {
   function getStatusClasses() {
-
     switch (status) {
-
       case "CONFIRMED":
         return "bg-green-100 text-green-700";
 
@@ -18,6 +13,12 @@ export default function StatusBadge({
 
       case "CANCELLED":
         return "bg-red-100 text-red-700";
+
+      case "REJECTED":
+        return "bg-red-100 text-red-700";
+
+      case "COMPLETED":
+        return "bg-blue-100 text-blue-700";
 
       default:
         return "bg-gray-100 text-gray-700";

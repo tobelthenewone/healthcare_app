@@ -1,3 +1,5 @@
+export type UserRole = "PATIENT" | "PROFESSIONAL" | "ADMIN";
+
 export interface LoginRequest {
   email: string;
   password: string;
@@ -10,7 +12,7 @@ export interface AuthResponse {
   id: number;
   email: string;
   fullName: string;
-  role: string;
+  role: UserRole;
 }
 
 export interface RefreshResponse {
@@ -23,11 +25,12 @@ export interface User {
   id: number;
   email: string;
   fullName: string;
-  role: string;
+  role: UserRole;
 }
+
 export interface CurrentUserResponse {
   id: number;
   email: string;
   fullName: string;
-  role: string;
+  role: UserRole;
 }

@@ -21,21 +21,22 @@ public class AdminService {
                         user.getId(),
                         user.getFullName(),
                         user.getEmail(),
-                        user.getRole().name()))
+                        user.getRole().name(),
+                        user.isEnabled()))
                 .toList();
     }
 
     public UserProfileResponse getUserById(Long id) {
-    User user = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-    return new UserProfileResponse(
-            user.getId(),
-            user.getFullName(),
-            user.getEmail(),
-            user.getRole().name()
-    );
-}
+        return new UserProfileResponse(
+                user.getId(),
+                user.getFullName(),
+                user.getEmail(),
+                user.getRole().name(),
+                user.isEnabled());
+    }
 
     // 3. Delete user
     public void deleteUser(Long id) {
@@ -43,5 +44,25 @@ public class AdminService {
             throw new RuntimeException("User not found");
         }
         userRepository.deleteById(id);
+    }
+
+    public UserProfileResponse updateUserStatus(
+            Long id,
+            boolean enabled) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setEnabled(enabled);
+
+        User updatedUser = userRepository.save(user);
+
+        return new UserProfileResponse(
+                updatedUser.getId(),
+                updatedUser.getFullName(),
+                updatedUser.getEmail(),
+                updatedUser.getRole().name(),
+                updatedUser.isEnabled());
+                
     }
 }

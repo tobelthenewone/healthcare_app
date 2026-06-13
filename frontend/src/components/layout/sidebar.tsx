@@ -1,29 +1,62 @@
 "use client";
 
 import Link from "next/link";
+import { useAuth } from "@/context/auth-context";
 import { usePathname } from "next/navigation";
-
-const links = [
-  {
-    href: "/book",
-    label: "Book Appointment",
-  },
-  {
-    href: "/dashboard",
-    label: "Dashboard",
-  },
-  {
-    href: "/appointments",
-    label: "Appointments",
-  },
-  {
-    href: "/profile",
-    label: "Profile",
-  },
-];
+import { isPatient, isProfessional, isAdmin } from "@/utils/authorization";
 
 export default function Sidebar() {
+  const { user } = useAuth();
   const pathname = usePathname();
+
+  const links: {
+    href: string;
+    label: string;
+  }[] = [];
+
+  if (isPatient(user?.role)) {
+    links.push(
+      {
+        href: "/book",
+        label: "Book Appointment",
+      },
+      {
+        href: "/appointments",
+        label: "My Appointments",
+      },
+    );
+  }
+
+  if (isProfessional(user?.role)) {
+    links.push(
+      {
+        href: "/professional",
+        label: "Professional Dashboard",
+      },
+      {
+        href: "/schedule",
+        label: "My Schedule",
+      },
+    );
+  }
+
+  if (isAdmin(user?.role)) {
+    links.push(
+      {
+        href: "/admin",
+        label: "Admin Dashboard",
+      },
+      {
+        href: "/admin/users",
+        label: "Users",
+      },
+      {
+        href: "/admin/appointments",
+
+        label: "Appointments",
+      },
+    );
+  }
 
   return (
     <aside className="w-64 bg-black text-white min-h-screen p-6">

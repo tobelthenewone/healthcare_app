@@ -107,4 +107,16 @@ public class AdminController {
 
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping("/users/{id}/status")
+    public ResponseEntity<UserProfileResponse> updateUserStatus(
+            @PathVariable Long id,
+            @RequestParam boolean enabled) {
+
+        UserProfileResponse response = adminService.updateUserStatus(
+                id,
+                enabled);
+
+        return ResponseEntity.ok(response);
+    }
 }

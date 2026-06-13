@@ -10,6 +10,8 @@ import professionalService from "@/services/professional-service";
 
 import { ProfessionalResponse } from "@/types/professional";
 
+import RoleGuard from "@/components/auth/role-guard";
+
 export default function BookAppointmentPage() {
   const [professionals, setProfessionals] = useState<ProfessionalResponse[]>(
     [],
@@ -100,6 +102,7 @@ export default function BookAppointmentPage() {
   }
 
   return (
+    <RoleGuard allowedRoles={["PATIENT"]}>
     <div className="max-w-3xl">
       <h1 className="text-3xl font-bold mb-6 text-black">Book Appointment</h1>
 
@@ -215,5 +218,6 @@ export default function BookAppointmentPage() {
         )}
       </div>
     </div>
+    </RoleGuard>
   );
 }
