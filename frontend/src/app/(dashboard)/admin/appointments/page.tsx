@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import adminService from "@/services/admin-service";
 import { AppointmentStatus } from "@/types/admin-appointment";
 import { AppointmentResponse } from "@/types/admin-appointment";
-
+import { useCallback } from "react";
 export default function AdminAppointmentsPage() {
   const [appointments, setAppointments] = useState<AppointmentResponse[]>([]);
   const [page, setPage] = useState(0);
@@ -14,9 +14,13 @@ export default function AdminAppointmentsPage() {
   const [status, setStatus] = useState<AppointmentStatus>("PENDING");
   const [loading, setLoading] = useState(true);
 
-  async function load() {
+  const load = useCallback(async () => {
     try {
-      const response = await adminService.getAppointments(status, page, 10);
+      const response = await adminService.filterAppointments(
+        { status },
+        page,
+        10,
+      );
 
       setAppointments(response.content);
       setTotalPages(response.totalPages);
@@ -25,15 +29,17 @@ export default function AdminAppointmentsPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [status, page]);
 
   useEffect(() => {
     async function initialize() {
+      await Promise.resolve();
+
       await load();
     }
 
     initialize();
-  }, [status, page]);
+  }, [load]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -47,7 +53,7 @@ export default function AdminAppointmentsPage() {
           setStatus(e.target.value as AppointmentStatus);
           setPage(0);
         }}
-        className="border rounded px-3 py-2 mb-6"
+        className="text-black border rounded px-3 py-2 mb-6"
       >
         <option value="PENDING">PENDING</option>
 
@@ -59,7 +65,11 @@ export default function AdminAppointmentsPage() {
 
         <option value="CANCELLED">CANCELLED</option>
       </select>
+      <div className="text-black flex gap-4 mb-6 ">
 
+
+
+      </div>
       <div
         className="text-black
           space-y-4
@@ -68,11 +78,7 @@ export default function AdminAppointmentsPage() {
         {appointments.map((appointment) => (
           <div
             key={appointment.id}
-            className="text-black
-                border
-                rounded-lg
-                p-4
-              "
+            className="text-black border rounded-lg p-4 "
           >
             <div>
               <strong>Patient:</strong> {appointment.patientName}
