@@ -4,15 +4,18 @@ import java.util.UUID;
 import com.healthcare.dto.AuthResponse;
 import com.healthcare.dto.LoginRequest;
 import com.healthcare.dto.RegisterRequest;
+import com.healthcare.model.DayOfWeekEnum;
+import com.healthcare.model.ProfessionalSchedule;
 import com.healthcare.model.RefreshToken;
 import com.healthcare.model.User;
+import com.healthcare.model.UserRole;
 import com.healthcare.model.VerificationToken;
+import com.healthcare.repository.ProfessionalScheduleRepository;
 import com.healthcare.repository.UserRepository;
 import com.healthcare.repository.VerificationTokenRepository;
 import com.healthcare.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -31,6 +34,7 @@ public class AuthService {
         private final JwtUtil jwtUtil;
         private final EmailService emailService;
         private final VerificationTokenRepository tokenRepository;
+        private final ProfessionalScheduleRepository professionalScheduleRepository;
 
         public void verifyToken(String token) {
 
@@ -87,6 +91,35 @@ public class AuthService {
                                 user.getEmail(),
                                 user.getPasswordChangedAt());
 
+                
+                if (user.getRole() == UserRole.PROFESSIONAL) {
+
+                        for (DayOfWeekEnum day : DayOfWeekEnum.values()) {
+
+                                ProfessionalSchedule schedule = new ProfessionalSchedule();
+
+                                schedule.setProfessional(user);
+                                schedule.setDayOfWeek(day);
+
+                                /*
+                                 * Default:
+                                 * Monday-Friday enabled
+                                 * Weekend disabled
+                                 */
+                                boolean weekend = day == DayOfWeekEnum.SATURDAY ||
+                                                day == DayOfWeekEnum.SUNDAY;
+
+                                schedule.setEnabled(!weekend);
+
+                                schedule.setStartHour(9);
+                                schedule.setEndHour(17);
+
+                                schedule.setBreakStartHour(12);
+                                schedule.setBreakEndHour(13);
+
+                                professionalScheduleRepository.save(schedule);
+                        }
+                }
                 return new AuthResponse(
                                 jwtToken,
                                 null, // no refresh token on register
@@ -115,7 +148,7 @@ public class AuthService {
                         // SUCCESS → reset attempts
                         loginAttemptService.loginSucceeded(user);
 
-                        user.setLastLoginAt(LocalDateTime.now());
+                        user.setLastLoginAt(Instant.now());
                         userRepository.save(user);
                         // Generate JWT and refresh token
                         String accessToken = jwtUtil.generateToken(

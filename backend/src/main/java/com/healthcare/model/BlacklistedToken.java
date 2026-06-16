@@ -1,6 +1,6 @@
 package com.healthcare.model;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -25,9 +25,9 @@ public class BlacklistedToken {
     @Column(nullable = false, unique = true)
     private String token;
 
-    private LocalDateTime expiryDate;
+    private Instant expiryDate;
 
-    public BlacklistedToken(String token, LocalDateTime expiryDate) {
+    public BlacklistedToken(String token, Instant expiryDate) {
         this.token = token;
         this.expiryDate = expiryDate;
     }

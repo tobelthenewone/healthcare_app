@@ -1,6 +1,6 @@
 package com.healthcare.service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,7 @@ public class LoginAttemptService {
 
         if (attempts >= MAX_ATTEMPTS) {
             user.setAccountNonLocked(false);
-            user.setLockTime(LocalDateTime.now());
+            user.setLockTime(Instant.now());
         }
 
         userRepository.save(user);

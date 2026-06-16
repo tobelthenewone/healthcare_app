@@ -8,8 +8,10 @@ import com.healthcare.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import com.healthcare.dto.ProfessionalResponse;
+import com.healthcare.model.UserRole;
 import java.time.Instant;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +27,8 @@ public class UserService {
                 user.getId(),
                 user.getFullName(),
                 user.getEmail(),
-                user.getRole().name()
-        );
+                user.getRole().name(),
+                user.isEnabled());
     }
 
     public UserProfileResponse updateProfile(Long userId, UpdateProfileRequest request) {
@@ -41,8 +43,8 @@ public class UserService {
                 user.getId(),
                 user.getFullName(),
                 user.getEmail(),
-                user.getRole().name()
-        );
+                user.getRole().name(),
+                user.isEnabled());
     }
 
     public void changePassword(Long userId, ChangePasswordRequest request) {
@@ -64,5 +66,17 @@ public class UserService {
         user.setPasswordChangedAt(Instant.now());
 
         userRepository.save(user);
+    }
+
+    public List<ProfessionalResponse> getProfessionals() {
+
+        return userRepository
+                .findByRole(UserRole.PROFESSIONAL)
+                .stream()
+                .map(user -> new ProfessionalResponse(
+                        user.getId(),
+                        user.getFullName(),
+                        user.getEmail()))
+                .toList();
     }
 }

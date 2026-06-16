@@ -1,6 +1,6 @@
 package com.healthcare.model;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,12 +27,12 @@ public class PasswordResetToken {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private LocalDateTime expiryDate;
+    private Instant expiryDate;
 
     // constructors
     public PasswordResetToken() {}
 
-    public PasswordResetToken(String hashedToken, User user, LocalDateTime expiryDate) {
+    public PasswordResetToken(String hashedToken, User user, Instant expiryDate) {
         this.hashedToken = hashedToken;
         this.user = user;
         this.expiryDate = expiryDate;
