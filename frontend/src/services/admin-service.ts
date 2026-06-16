@@ -6,6 +6,7 @@ import {
   PagedResponse,
   AppointmentStatus,
 } from "@/types/admin-appointment";
+import { AppointmentFilterRequest } from "@/types/admin-filter";
 const adminService = {
   async getUsers(): Promise<UserProfileResponse[]> {
     const response = await api.get<UserProfileResponse[]>("/admin/users");
@@ -41,6 +42,21 @@ const adminService = {
     const response = await api.get("/admin/appointments", {
       params: {
         status,
+        page,
+        size,
+      },
+    });
+
+    return response.data;
+  },
+  async filterAppointments(
+    filters: AppointmentFilterRequest,
+    page = 0,
+    size = 10,
+  ): Promise<PagedResponse<AppointmentResponse>> {
+    const response = await api.get("/admin/appointments/filter", {
+      params: {
+        ...filters,
         page,
         size,
       },
