@@ -52,8 +52,11 @@ export default function Sidebar() {
       },
       {
         href: "/admin/appointments",
-
         label: "Appointments",
+      },
+            {
+        href: "/admin/calendar",
+        label: "Calendar",
       },
     );
   }
