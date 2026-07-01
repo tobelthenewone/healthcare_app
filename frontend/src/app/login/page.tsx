@@ -1,3 +1,4 @@
+// Starting point of the application's login page component, which handles user authentication and navigation after successful login. It uses React hooks for state management and Next.js routing for navigation. The component also includes error handling for failed login attempts.
 "use client";
 
 import { useState } from "react";
