@@ -6,17 +6,12 @@ import lombok.*;
 import java.time.Instant;
 
 @Entity
-@Table(
-        name = "appointments",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        columnNames = {
+@Table(name = "appointments", uniqueConstraints = {
+                @UniqueConstraint(columnNames = {
                                 "professional_id",
                                 "appointment_time"
-                        }
-                )
-        }
-)
+                })
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,60 +19,66 @@ import java.time.Instant;
 @Builder
 public class Appointment {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
 
-    /*
-     * Patient who booked the appointment
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "patient_id", nullable = false)
-    private User patient;
+        /*
+         * Patient who booked the appointment
+         */
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "patient_id", nullable = false)
+        private User patient;
 
-    /*
-     * Professional receiving the appointment
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "professional_id", nullable = false)
-    private User professional;
+        /*
+         * Professional receiving the appointment
+         */
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "professional_id", nullable = false)
+        private User professional;
 
-    /*
-     * Appointment date & time
-     */
-    @Column(nullable = false)
-    private Instant appointmentTime;
+        /*
+         * Appointment date & time
+         */
+        @Column(nullable = false)
+        private Instant appointmentTime;
 
-    /*
-     * Current appointment status
-     */
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private AppointmentStatus status;
+        /*
+         * Current appointment status
+         */
+        @Enumerated(EnumType.STRING)
+        @Column(nullable = false)
+        private AppointmentStatus status;
 
-    /*
-     * Optional patient note/reason
-     */
-    @Column(length = 1000)
-    private String reason;
+        /*
+         * Optional patient note/reason
+         */
+        @Column(length = 1000)
+        private String reason;
 
-    /*
-     * Audit fields
-     */
-    @Column(nullable = false, updatable = false)
-    private Instant createdAt;
+        /*
+         * Consultation record created after the appointment is completed.
+         */
+        @OneToOne(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+        private ConsultationRecord consultationRecord;
 
-    @Column(nullable = false)
-    private Instant updatedAt;
+        /*
+         * Audit fields
+         */
+        @Column(nullable = false, updatable = false)
+        private Instant createdAt;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = Instant.now();
-        updatedAt = Instant.now();
-    }
+        @Column(nullable = false)
+        private Instant updatedAt;
 
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = Instant.now();
-    }
+        @PrePersist
+        protected void onCreate() {
+                createdAt = Instant.now();
+                updatedAt = Instant.now();
+        }
+
+        @PreUpdate
+        protected void onUpdate() {
+                updatedAt = Instant.now();
+        }
 }
