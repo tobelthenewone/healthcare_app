@@ -1,3 +1,4 @@
+// This is the SecurityConfig class for the healthcare application. It configures Spring Security to handle authentication and authorization, including JWT authentication, rate limiting, CORS configuration, and session management. The class defines beans for password encoding, authentication management, and security filter chain setup.
 package com.healthcare.config;
 
 import com.healthcare.security.JwtAuthenticationFilter;
