@@ -19,6 +19,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long>,
                         User professional,
                         Instant appointmentTime);
 
+        List<Appointment> findByProfessionalIdAndStatusOrderByAppointmentTimeDesc(
+                        Long professionalId,
+                        AppointmentStatus status);
+
         List<Appointment> findByPatientOrderByAppointmentTimeDesc(User patient);
 
         List<Appointment> findByProfessionalOrderByAppointmentTimeDesc(User professional);
