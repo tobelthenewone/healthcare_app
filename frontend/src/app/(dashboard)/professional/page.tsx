@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 import { useEffect, useState } from "react";
 
@@ -86,7 +87,16 @@ export default function ProfessionalPage() {
                   {new Date(appointment.appointmentTime).toLocaleString()}
                 </p>
               </div>
-
+              {appointment.status === "COMPLETED" && (
+                <div className="mt-5">
+                  <Link
+                    href={`/professional/consultation/${appointment.id}`}
+                    className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                  >
+                    Consultation
+                  </Link>
+                </div>
+              )}
               {appointment.status === "PENDING" && (
                 <div className="flex gap-3 mt-5">
                   <button
