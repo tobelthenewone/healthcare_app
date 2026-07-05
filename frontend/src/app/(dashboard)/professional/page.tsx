@@ -114,6 +114,16 @@ export default function ProfessionalPage() {
                   </button>
                 </div>
               )}
+              {appointment.status === "CONFIRMED" && (
+                <div className="mt-5">
+                  <button
+                    onClick={() => updateStatus(appointment.id, "COMPLETED")}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
+                  >
+                    Complete Appointment
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>
