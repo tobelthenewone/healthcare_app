@@ -22,6 +22,19 @@ public class ConsultationServiceImpl implements ConsultationService {
     private final ConsultationRecordRepository consultationRepository;
 
     @Override
+    public boolean exists(Long appointmentId, Long professionalId) {
+
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new EntityNotFoundException("Appointment not found"));
+
+        if (!appointment.getProfessional().getId().equals(professionalId)) {
+            throw new IllegalStateException("Access denied.");
+        }
+
+        return consultationRepository.existsByAppointmentId(appointmentId);
+    }
+
+    @Override
     public ConsultationResponse getPatientConsultation(Long consultationId,
             Long patientId) {
 

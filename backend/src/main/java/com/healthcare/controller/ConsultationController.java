@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
+import com.healthcare.dto.ConsultationExistsResponse;
 import java.util.List;
 
 @RestController
@@ -17,61 +17,73 @@ import java.util.List;
 @RequestMapping("/api")
 public class ConsultationController {
 
-    private final ConsultationService consultationService;
+        private final ConsultationService consultationService;
 
-    @GetMapping("/patient/consultations/{consultationId}")
-    @PreAuthorize("hasRole('PATIENT')")
-    public ConsultationResponse getPatientConsultation(
-            @PathVariable Long consultationId,
-            @AuthenticationPrincipal CustomUserDetails user) {
+        @GetMapping("/professional/appointments/{appointmentId}/consultation/exists")
+        @PreAuthorize("hasRole('PROFESSIONAL')")
+        public ConsultationExistsResponse consultationExists(
+                        @PathVariable Long appointmentId,
+                        @AuthenticationPrincipal CustomUserDetails user) {
 
-        return consultationService.getPatientConsultation(
-                consultationId,
-                user.getId());
-    }
+                return new ConsultationExistsResponse(
+                                consultationService.exists(
+                                                appointmentId,
+                                                user.getId()));
+        }
 
-    @PostMapping("/professional/appointments/{appointmentId}/consultation")
-    @PreAuthorize("hasRole('PROFESSIONAL')")
-    public ConsultationResponse createConsultation(
-            @PathVariable Long appointmentId,
-            @Valid @RequestBody CreateConsultationRequest request,
-            @AuthenticationPrincipal CustomUserDetails user) {
+        @GetMapping("/patient/consultations/{consultationId}")
+        @PreAuthorize("hasRole('PATIENT')")
+        public ConsultationResponse getPatientConsultation(
+                        @PathVariable Long consultationId,
+                        @AuthenticationPrincipal CustomUserDetails user) {
 
-        return consultationService.create(
-                appointmentId,
-                user.getId(),
-                request);
-    }
+                return consultationService.getPatientConsultation(
+                                consultationId,
+                                user.getId());
+        }
 
-    @PutMapping("/professional/consultations/{consultationId}")
-    @PreAuthorize("hasRole('PROFESSIONAL')")
-    public ConsultationResponse updateConsultation(
-            @PathVariable Long consultationId,
-            @Valid @RequestBody CreateConsultationRequest request,
-            @AuthenticationPrincipal CustomUserDetails user) {
+        @PostMapping("/professional/appointments/{appointmentId}/consultation")
+        @PreAuthorize("hasRole('PROFESSIONAL')")
+        public ConsultationResponse createConsultation(
+                        @PathVariable Long appointmentId,
+                        @Valid @RequestBody CreateConsultationRequest request,
+                        @AuthenticationPrincipal CustomUserDetails user) {
 
-        return consultationService.update(
-                consultationId,
-                user.getId(),
-                request);
-    }
+                return consultationService.create(
+                                appointmentId,
+                                user.getId(),
+                                request);
+        }
 
-    @GetMapping("/professional/appointments/{appointmentId}/consultation")
-    @PreAuthorize("hasRole('PROFESSIONAL')")
-    public ConsultationResponse getProfessionalConsultation(
-            @PathVariable Long appointmentId,
-            @AuthenticationPrincipal CustomUserDetails user) {
+        @PutMapping("/professional/consultations/{consultationId}")
+        @PreAuthorize("hasRole('PROFESSIONAL')")
+        public ConsultationResponse updateConsultation(
+                        @PathVariable Long consultationId,
+                        @Valid @RequestBody CreateConsultationRequest request,
+                        @AuthenticationPrincipal CustomUserDetails user) {
 
-        return consultationService.getByAppointment(
-                appointmentId,
-                user.getId());
-    }
+                return consultationService.update(
+                                consultationId,
+                                user.getId(),
+                                request);
+        }
 
-    @GetMapping("/patient/consultations")
-    @PreAuthorize("hasRole('PATIENT')")
-    public List<ConsultationResponse> getPatientConsultations(
-            @AuthenticationPrincipal CustomUserDetails user) {
+        @GetMapping("/professional/appointments/{appointmentId}/consultation")
+        @PreAuthorize("hasRole('PROFESSIONAL')")
+        public ConsultationResponse getProfessionalConsultation(
+                        @PathVariable Long appointmentId,
+                        @AuthenticationPrincipal CustomUserDetails user) {
 
-        return consultationService.getPatientConsultations(user.getId());
-    }
+                return consultationService.getByAppointment(
+                                appointmentId,
+                                user.getId());
+        }
+
+        @GetMapping("/patient/consultations")
+        @PreAuthorize("hasRole('PATIENT')")
+        public List<ConsultationResponse> getPatientConsultations(
+                        @AuthenticationPrincipal CustomUserDetails user) {
+
+                return consultationService.getPatientConsultations(user.getId());
+        }
 }

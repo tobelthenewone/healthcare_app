@@ -7,19 +7,21 @@ import java.util.List;
 
 public interface ConsultationService {
 
-    ConsultationResponse getPatientConsultation(Long consultationId,
-            Long patientId);
+        boolean exists(Long appointmentId, Long professionalId);
 
-    ConsultationResponse update(Long consultationId,
-            Long professionalId,
-            CreateConsultationRequest request);
+        ConsultationResponse getPatientConsultation(Long consultationId,
+                        Long patientId);
 
-    ConsultationResponse create(Long appointmentId,
-            Long professionalId,
-            CreateConsultationRequest request);
+        ConsultationResponse update(Long consultationId,
+                        Long professionalId,
+                        CreateConsultationRequest request);
 
-    ConsultationResponse getByAppointment(Long appointmentId,
-            Long professionalId);
+        ConsultationResponse create(Long appointmentId,
+                        Long professionalId,
+                        CreateConsultationRequest request);
 
-    List<ConsultationResponse> getPatientConsultations(Long patientId);
+        ConsultationResponse getByAppointment(Long appointmentId,
+                        Long professionalId);
+
+        List<ConsultationResponse> getPatientConsultations(Long patientId);
 }
