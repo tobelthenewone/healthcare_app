@@ -25,6 +25,14 @@ export default function ConsultationPage() {
   useEffect(() => {
     const initialize = async () => {
       try {
+        const result =
+          await consultationService.consultationExists(appointmentId);
+
+        if (!result.exists) {
+          setLoading(false);
+          return;
+        }
+
         const data = await consultationService.getByAppointment(appointmentId);
 
         setConsultation(data);
@@ -56,6 +64,7 @@ export default function ConsultationPage() {
       alert("Consultation saved.");
 
       router.push("/professional");
+      router.refresh();
     } catch (error) {
       console.error(error);
 

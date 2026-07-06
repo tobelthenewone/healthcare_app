@@ -1,10 +1,16 @@
 import api from "@/lib/api";
-import {
-  Consultation,
-  CreateConsultationRequest,
-} from "@/types/consultation";
+import { Consultation, CreateConsultationRequest } from "@/types/consultation";
 
 const consultationService = {
+  async consultationExists(
+    appointmentId: number,
+  ): Promise<{ exists: boolean }> {
+    const response = await api.get<{ exists: boolean }>(
+      `/professional/appointments/${appointmentId}/consultation/exists`,
+    );
+
+    return response.data;
+  },
   async create(
     appointmentId: number,
     data: CreateConsultationRequest,
@@ -29,9 +35,7 @@ const consultationService = {
     return response.data;
   },
 
-  async getByAppointment(
-    appointmentId: number,
-  ): Promise<Consultation> {
+  async getByAppointment(appointmentId: number): Promise<Consultation> {
     const response = await api.get<Consultation>(
       `/professional/appointments/${appointmentId}/consultation`,
     );
@@ -40,16 +44,12 @@ const consultationService = {
   },
 
   async getPatientHistory(): Promise<Consultation[]> {
-    const response = await api.get<Consultation[]>(
-      "/patient/consultations",
-    );
+    const response = await api.get<Consultation[]>("/patient/consultations");
 
     return response.data;
   },
 
-  async getPatientConsultation(
-    consultationId: number,
-  ): Promise<Consultation> {
+  async getPatientConsultation(consultationId: number): Promise<Consultation> {
     const response = await api.get<Consultation>(
       `/patient/consultations/${consultationId}`,
     );
