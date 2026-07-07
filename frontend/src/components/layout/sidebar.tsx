@@ -24,6 +24,10 @@ export default function Sidebar() {
         href: "/appointments",
         label: "My Appointments",
       },
+      {
+        label: "Medical History",
+        href: "/patient/medical-history",
+      },
     );
   }
 
@@ -54,7 +58,7 @@ export default function Sidebar() {
         href: "/admin/appointments",
         label: "Appointments",
       },
-            {
+      {
         href: "/admin/calendar",
         label: "Calendar",
       },
