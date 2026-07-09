@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useAuth } from "@/context/auth-context";
 import PublicRoute from "@/components/auth/public-route";
-
+import Link from "next/link";
 export default function LoginPage() {
   const router = useRouter();
 
@@ -81,6 +81,13 @@ export default function LoginPage() {
             >
               {loading ? "Logging in..." : "Login"}
             </button>
+            <div className="mt-6 text-center text-sm">
+              <span className="text-gray-600">Don&apos;t have an account? </span>
+
+              <Link href="/register" className="text-blue-600 hover:underline">
+                Register
+              </Link>
+            </div>
           </form>
         </div>
       </div>
