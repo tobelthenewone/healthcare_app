@@ -45,7 +45,19 @@ export default function RegisterPage() {
       router.push("/login");
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.message ?? "Registration failed.");
+        const data = err.response?.data;
+
+        if (data?.message) {
+          setError(data.message);
+        } else {
+          const firstError = Object.values(data ?? {})[0];
+
+          setError(
+            typeof firstError === "string"
+              ? firstError
+              : "Registration failed.",
+          );
+        }
       } else {
         setError("Something went wrong.");
       }
