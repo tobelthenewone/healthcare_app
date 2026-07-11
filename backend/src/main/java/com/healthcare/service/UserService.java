@@ -3,13 +3,16 @@ package com.healthcare.service;
 import com.healthcare.dto.ChangePasswordRequest;
 import com.healthcare.dto.UpdateProfileRequest;
 import com.healthcare.dto.UserProfileResponse;
+import com.healthcare.dto.ProfessionalResponse;
+import com.healthcare.dto.ProfessionalProfileRequest;
+import com.healthcare.dto.ProfessionalProfileResponse;
 import com.healthcare.model.User;
+import com.healthcare.model.UserRole;
 import com.healthcare.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.healthcare.dto.ProfessionalResponse;
-import com.healthcare.model.UserRole;
+
 import java.time.Instant;
 import java.util.List;
 
@@ -76,7 +79,43 @@ public class UserService {
                 .map(user -> new ProfessionalResponse(
                         user.getId(),
                         user.getFullName(),
-                        user.getEmail()))
+                        user.getEmail(),
+                        user.getSpecialty()))
                 .toList();
+    }
+
+    public ProfessionalProfileResponse getProfessionalProfile(Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow();
+
+        return ProfessionalProfileResponse.builder()
+                .id(user.getId())
+                .fullName(user.getFullName())
+                .email(user.getEmail())
+                .specialty(user.getSpecialty())
+                .description(user.getDescription())
+                .build();
+    }
+
+    public ProfessionalProfileResponse updateProfessionalProfile(
+            Long userId,
+            ProfessionalProfileRequest request) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow();
+
+        user.setSpecialty(request.getSpecialty());
+        user.setDescription(request.getDescription());
+
+        userRepository.save(user);
+
+        return ProfessionalProfileResponse.builder()
+                .id(user.getId())
+                .fullName(user.getFullName())
+                .email(user.getEmail())
+                .specialty(user.getSpecialty())
+                .description(user.getDescription())
+                .build();
     }
 }
