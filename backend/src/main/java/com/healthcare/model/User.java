@@ -75,12 +75,16 @@ public class User {
     @Column(name = "last_login_at")
     private Instant lastLoginAt;
 
-
     @PrePersist
     public void prePersist() {
 
         createdAt = Instant.now();
 
-        
     }
+
+    @Column(length = 100)
+    private String specialty;
+
+    @Column(length = 2000)
+    private String description;
 }
