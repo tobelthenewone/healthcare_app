@@ -1,11 +1,11 @@
 package com.healthcare.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 
-@Getter
-@AllArgsConstructor
-public class ProfessionalResponse {
+@Data
+@Builder
+public class ProfessionalProfileResponse {
 
     private Long id;
 
@@ -14,4 +14,7 @@ public class ProfessionalResponse {
     private String email;
 
     private String specialty;
+
+    private String description;
+
 }
