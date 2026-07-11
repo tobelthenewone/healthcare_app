@@ -14,21 +14,27 @@ import jakarta.validation.Valid;
 import com.healthcare.dto.UpdateProfessionalScheduleRequest;
 import com.healthcare.security.CustomUserDetails;
 import com.healthcare.dto.AppointmentResponse;
+import com.healthcare.dto.ProfessionalProfileRequest;
+import com.healthcare.dto.ProfessionalProfileResponse;
 import com.healthcare.dto.ProfessionalScheduleResponse;
 import com.healthcare.model.User;
 import com.healthcare.service.AppointmentService;
 import com.healthcare.service.ProfessionalScheduleService;
+import com.healthcare.service.UserService;
 
 @RestController
 @RequestMapping("/api/professional")
 public class ProfessionalController {
 
+    private final UserService userService;
     private final AppointmentService appointmentService;
     private final ProfessionalScheduleService professionalScheduleService;
 
     public ProfessionalController(
+            UserService userService,
             AppointmentService appointmentService,
             ProfessionalScheduleService professionalScheduleService) {
+        this.userService = userService;
         this.appointmentService = appointmentService;
         this.professionalScheduleService = professionalScheduleService;
     }
@@ -105,5 +111,28 @@ public class ProfessionalController {
                 request);
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<ProfessionalProfileResponse> getProfile(
+            Authentication authentication) {
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        return ResponseEntity.ok(
+                userService.getProfessionalProfile(userDetails.getId()));
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<ProfessionalProfileResponse> updateProfile(
+            @Valid @RequestBody ProfessionalProfileRequest request,
+            Authentication authentication) {
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        return ResponseEntity.ok(
+                userService.updateProfessionalProfile(
+                        userDetails.getId(),
+                        request));
     }
 }
