@@ -13,7 +13,7 @@ public class ProfessionalProfileResponse {
 
     private String email;
 
-    private String specialty;
+    private String specialties;
 
     private String description;
 
