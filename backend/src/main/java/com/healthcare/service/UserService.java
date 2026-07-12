@@ -4,7 +4,7 @@ import com.healthcare.dto.ChangePasswordRequest;
 import com.healthcare.dto.UpdateProfileRequest;
 import com.healthcare.dto.UserProfileResponse;
 import com.healthcare.dto.ProfessionalResponse;
-import com.healthcare.dto.ProfessionalProfileRequest;
+import com.healthcare.dto.ProfessionalProfileUpdateRequest;
 import com.healthcare.dto.ProfessionalProfileResponse;
 import com.healthcare.model.User;
 import com.healthcare.model.UserRole;
@@ -80,7 +80,7 @@ public class UserService {
                         user.getId(),
                         user.getFullName(),
                         user.getEmail(),
-                        user.getSpecialty()))
+                        user.getSpecialties()))
                 .toList();
     }
 
@@ -93,19 +93,19 @@ public class UserService {
                 .id(user.getId())
                 .fullName(user.getFullName())
                 .email(user.getEmail())
-                .specialty(user.getSpecialty())
+                .specialties(user.getSpecialties())
                 .description(user.getDescription())
                 .build();
     }
 
     public ProfessionalProfileResponse updateProfessionalProfile(
             Long userId,
-            ProfessionalProfileRequest request) {
+            ProfessionalProfileUpdateRequest request) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow();
 
-        user.setSpecialty(request.getSpecialty());
+        user.setSpecialties(request.getSpecialties());
         user.setDescription(request.getDescription());
 
         userRepository.save(user);
@@ -114,7 +114,7 @@ public class UserService {
                 .id(user.getId())
                 .fullName(user.getFullName())
                 .email(user.getEmail())
-                .specialty(user.getSpecialty())
+                .specialties(user.getSpecialties())
                 .description(user.getDescription())
                 .build();
     }

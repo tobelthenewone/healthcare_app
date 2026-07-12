@@ -82,8 +82,8 @@ public class User {
 
     }
 
-    @Column(length = 100)
-    private String specialty;
+    @Column(length = 200)
+    private String specialties;
 
     @Column(length = 2000)
     private String description;
