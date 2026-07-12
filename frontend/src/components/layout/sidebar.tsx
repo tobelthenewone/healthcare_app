@@ -41,6 +41,10 @@ export default function Sidebar() {
         href: "/schedule",
         label: "My Schedule",
       },
+      {
+        label: "Profile",
+        href: "/professional/profile",
+      },
     );
   }
 
