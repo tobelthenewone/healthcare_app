@@ -14,7 +14,7 @@ import jakarta.validation.Valid;
 import com.healthcare.dto.UpdateProfessionalScheduleRequest;
 import com.healthcare.security.CustomUserDetails;
 import com.healthcare.dto.AppointmentResponse;
-import com.healthcare.dto.ProfessionalProfileRequest;
+import com.healthcare.dto.ProfessionalProfileUpdateRequest;
 import com.healthcare.dto.ProfessionalProfileResponse;
 import com.healthcare.dto.ProfessionalScheduleResponse;
 import com.healthcare.model.User;
@@ -125,7 +125,7 @@ public class ProfessionalController {
 
     @PutMapping("/profile")
     public ResponseEntity<ProfessionalProfileResponse> updateProfile(
-            @Valid @RequestBody ProfessionalProfileRequest request,
+            @Valid @RequestBody ProfessionalProfileUpdateRequest request,
             Authentication authentication) {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
