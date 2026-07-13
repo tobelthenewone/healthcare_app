@@ -28,6 +28,10 @@ export default function Sidebar() {
         label: "Medical History",
         href: "/patient/medical-history",
       },
+      {
+        label: "Profile",
+        href: "/profile",
+      },
     );
   }
 
