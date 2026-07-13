@@ -21,6 +21,8 @@ import com.healthcare.dto.AppointmentResponse;
 import com.healthcare.dto.AvailableSlotResponse;
 import com.healthcare.dto.BookAppointmentRequest;
 import com.healthcare.dto.ChangePasswordRequest;
+import com.healthcare.dto.PatientProfileResponse;
+import com.healthcare.dto.UpdatePatientProfileRequest;
 
 @RestController
 @RequestMapping("/api/patient")
@@ -80,6 +82,25 @@ public class PatientController {
             @RequestBody UpdateProfileRequest request) {
 
         return userService.updateProfile(user.getId(), request);
+    }
+
+    @PreAuthorize("hasRole('PATIENT')")
+    @GetMapping("/profile")
+    public PatientProfileResponse getPatientProfile(
+            @AuthenticationPrincipal CustomUserDetails user) {
+
+        return userService.getPatientProfile(user.getId());
+    }
+
+    @PreAuthorize("hasRole('PATIENT')")
+    @PutMapping("/profile")
+    public PatientProfileResponse updatePatientProfile(
+            @AuthenticationPrincipal CustomUserDetails user,
+            @Valid @RequestBody UpdatePatientProfileRequest request) {
+
+        return userService.updatePatientProfile(
+                user.getId(),
+                request);
     }
 
     @PreAuthorize("hasRole('PATIENT')")
