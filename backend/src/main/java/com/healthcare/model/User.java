@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -87,4 +88,16 @@ public class User {
 
     @Column(length = 2000)
     private String description;
+
+    @Column
+    private LocalDate dateOfBirth;
+
+    @Column(length = 5)
+    private String bloodGroup;
+
+    @Column(length = 1000)
+    private String allergies;
+
+    @Column(length = 2000)
+    private String medicalNotes;
 }
