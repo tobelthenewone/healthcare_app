@@ -19,7 +19,9 @@ export default function BookAppointmentPage() {
 
   const [selectedProfessional, setSelectedProfessional] =
     useState<ProfessionalResponse | null>(null);
-
+  const [expandedProfessionalId, setExpandedProfessionalId] = useState<
+    number | null
+  >(null);
   const [date, setDate] = useState("");
 
   const [reason, setReason] = useState("");
@@ -103,121 +105,162 @@ export default function BookAppointmentPage() {
 
   return (
     <RoleGuard allowedRoles={["PATIENT"]}>
-    <div className="max-w-3xl">
-      <h1 className="text-3xl font-bold mb-6 text-black">Book Appointment</h1>
+      <div className="max-w-3xl">
+        <h1 className="text-3xl font-bold mb-6 text-black">Book Appointment</h1>
 
-      <div className="space-y-6">
-        <div>
-          <label className="block mb-4 font-medium text-black">
-            Select Professional
-          </label>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {professionals.map((professional) => {
-              const isSelected = selectedProfessional?.id === professional.id;
-
-              return (
-                <button
-                  key={professional.id}
-                  type="button"
-                  onClick={() => setSelectedProfessional(professional)}
-                  className={`
-                border rounded-xl p-4 text-left transition
-                ${isSelected ? "bg-black text-white" : "bg-white hover:border-black text-black"}
-              `}
-                >
-                  <h2 className="font-semibold text-lg text-black">
-                    {professional.fullName}
-                  </h2>
-
-                  <p className="text-sm opacity-70 mt-1 text-black">
-                    {professional.email}
-                  </p>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <div>
-          <label className="block mb-2 font-medium text-black">
-            Select Date
-          </label>
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="border rounded-md px-4 py-2 w-full text-black"
-          />
-        </div>
-
-        <button
-          onClick={loadSlots}
-          className="bg-black text-white px-4 py-2 rounded-md"
-        >
-          Load Available Slots
-        </button>
-
-        {loading && <p className="text-black">Loading slots...</p>}
-
-        {!loading && slots.length > 0 && (
+        <div className="space-y-6">
           <div>
-            <h2 className="text-xl font-semibold mb-4 text-black">
-              Available Slots
-            </h2>
+            <label className="block mb-4 font-medium text-black">
+              Select Professional
+            </label>
 
-            <div className="grid grid-cols-2 gap-3">
-              {slots.map((slot) => {
-                const isSelected = selectedSlot === slot.startTime;
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {professionals.map((professional) => {
+                const isSelected = selectedProfessional?.id === professional.id;
 
                 return (
-                  <button
-                    key={slot.startTime}
-                    onClick={() => setSelectedSlot(slot.startTime)}
+                  <div
+                    key={professional.id}
                     className={`
-                  border rounded-lg p-3 text-left transition
-                  ${isSelected ? "bg-black text-white" : "bg-white text-black"}
-                `}
+    relative border rounded-xl p-5 transition
+    ${isSelected ? "border-black bg-gray-50" : "bg-white hover:border-black"}
+  `}
                   >
-                    <p className="font-medium text-black">
-                      {new Date(slot.startTime).toLocaleTimeString()}
-                    </p>
+                    {isSelected && (
+                      <span className="absolute top-3 right-3 rounded-full bg-green-600 px-2 py-1 text-xs text-white">
+                        Selected
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedProfessional(professional)}
+                      className="w-full text-left"
+                    >
+                      <h2 className="text-lg font-semibold text-black">
+                        {professional.fullName}
+                      </h2>
 
-                    <p className="text-sm opacity-70 text-black">
-                      to {new Date(slot.endTime).toLocaleTimeString()}
-                    </p>
-                  </button>
+                      <p className="text-sm text-gray-600 mt-2">
+                        {professional.email}
+                      </p>
+
+                      <p className="text-sm mt-2">
+                        <span className="font-medium">Specialties:</span>{" "}
+                        {professional.specialties || "Not provided"}
+                      </p>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setExpandedProfessionalId(
+                          expandedProfessionalId === professional.id
+                            ? null
+                            : professional.id,
+                        )
+                      }
+                      className="mt-4 text-sm text-blue-600 hover:underline"
+                    >
+                      {expandedProfessionalId === professional.id
+                        ? "Hide Description"
+                        : "View Description"}
+                    </button>
+
+                    {expandedProfessionalId === professional.id && (
+                      <div className="mt-4 border-t pt-4">
+                        <h3 className="font-medium mb-2 text-black">About</h3>
+
+                        <p className="text-gray-700 whitespace-pre-wrap">
+                          {professional.description ||
+                            "This professional hasn't added a description yet."}
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 );
               })}
             </div>
           </div>
-        )}
 
-        {selectedSlot && (
-          <div className="space-y-4">
-            <div>
-              <label className="block mb-2 font-medium text-black">
-                Reason
-              </label>
-              <textarea
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                className="border rounded-md px-4 py-2 w-full text-black"
-                rows={4}
-              />
-            </div>
-
-            <button
-              onClick={handleBooking}
-              disabled={bookingLoading}
-              className="bg-black text-white px-4 py-2 rounded-md"
-            >
-              {bookingLoading ? "Booking..." : "Confirm Booking"}
-            </button>
+          <div>
+            <label className="block mb-2 font-medium text-black">
+              Select Date
+            </label>
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="border rounded-md px-4 py-2 w-full text-black"
+            />
           </div>
-        )}
+
+          <button
+            onClick={loadSlots}
+            className="bg-black text-white px-4 py-2 rounded-md"
+          >
+            Load Available Slots
+          </button>
+
+          {loading && <p className="text-black">Loading slots...</p>}
+
+          {!loading && slots.length > 0 && (
+            <div>
+              <h2 className="text-xl font-semibold mb-4 text-black">
+                Available Slots
+              </h2>
+
+              <div className="grid grid-cols-2 gap-3">
+                {slots.map((slot) => {
+                  const isSelected = selectedSlot === slot.startTime;
+
+                  return (
+                    <button
+                      key={slot.startTime}
+                      onClick={() => setSelectedSlot(slot.startTime)}
+                      className={`
+                  border rounded-lg p-3 text-left transition
+                  ${isSelected ? "bg-black text-white" : "bg-white text-black"}
+                `}
+                    >
+                      <p className="font-medium text-black">
+                        {new Date(slot.startTime).toLocaleTimeString()}
+                      </p>
+
+                      <p className="text-sm opacity-70 text-black">
+                        to {new Date(slot.endTime).toLocaleTimeString()}
+                      </p>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {selectedSlot && (
+            <div className="space-y-4">
+              <div>
+                <label className="block mb-2 font-medium text-black">
+                  Reason
+                </label>
+                <textarea
+                  value={reason}
+                  onChange={(e) => setReason(e.target.value)}
+                  className="border rounded-md px-4 py-2 w-full text-black"
+                  rows={4}
+                />
+              </div>
+
+              <button
+                onClick={handleBooking}
+                disabled={bookingLoading}
+                className="bg-black text-white px-4 py-2 rounded-md"
+              >
+                {bookingLoading ? "Booking..." : "Confirm Booking"}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
     </RoleGuard>
   );
 }
