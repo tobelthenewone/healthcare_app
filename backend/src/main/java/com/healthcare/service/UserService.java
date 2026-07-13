@@ -1,9 +1,11 @@
 package com.healthcare.service;
 
 import com.healthcare.dto.ChangePasswordRequest;
+import com.healthcare.dto.PatientProfileResponse;
 import com.healthcare.dto.UpdateProfileRequest;
 import com.healthcare.dto.UserProfileResponse;
 import com.healthcare.dto.ProfessionalResponse;
+import com.healthcare.dto.UpdatePatientProfileRequest;
 import com.healthcare.dto.ProfessionalProfileUpdateRequest;
 import com.healthcare.dto.ProfessionalProfileResponse;
 import com.healthcare.model.User;
@@ -80,7 +82,8 @@ public class UserService {
                         user.getId(),
                         user.getFullName(),
                         user.getEmail(),
-                        user.getSpecialties()))
+                        user.getSpecialties(),
+                        user.getDescription()))
                 .toList();
     }
 
@@ -117,5 +120,44 @@ public class UserService {
                 .specialties(user.getSpecialties())
                 .description(user.getDescription())
                 .build();
+    }
+
+    private PatientProfileResponse toPatientProfile(User user) {
+
+        return PatientProfileResponse.builder()
+                .id(user.getId())
+                .fullName(user.getFullName())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .dateOfBirth(user.getDateOfBirth())
+                .bloodGroup(user.getBloodGroup())
+                .allergies(user.getAllergies())
+                .medicalNotes(user.getMedicalNotes())
+                .build();
+    }
+
+    public PatientProfileResponse getPatientProfile(Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow();
+
+        return toPatientProfile(user);
+    }
+
+    public PatientProfileResponse updatePatientProfile(
+            Long userId,
+            UpdatePatientProfileRequest request) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow();
+
+        user.setDateOfBirth(request.getDateOfBirth());
+        user.setBloodGroup(request.getBloodGroup());
+        user.setAllergies(request.getAllergies());
+        user.setMedicalNotes(request.getMedicalNotes());
+
+        userRepository.save(user);
+
+        return toPatientProfile(user);
     }
 }
