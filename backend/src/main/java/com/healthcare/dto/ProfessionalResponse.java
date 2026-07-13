@@ -14,4 +14,6 @@ public class ProfessionalResponse {
     private String email;
 
     private String specialties;
+
+    private String description;
 }
