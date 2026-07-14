@@ -30,7 +30,7 @@ export default function Sidebar() {
       },
       {
         label: "Profile",
-        href: "/profile",
+        href: "/patient/profile",
       },
     );
   }
