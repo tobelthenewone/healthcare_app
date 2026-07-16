@@ -17,11 +17,11 @@ export default function Sidebar() {
   if (isPatient(user?.role)) {
     links.push(
       {
-        href: "/book",
+        href: "/patient/book",
         label: "Book Appointment",
       },
       {
-        href: "/appointments",
+        href: "/patient/appointments",
         label: "My Appointments",
       },
       {
@@ -38,16 +38,16 @@ export default function Sidebar() {
   if (isProfessional(user?.role)) {
     links.push(
       {
-        href: "/professional",
+        href: "/professional/Dashboard",
         label: "Professional Dashboard",
       },
       {
-        href: "/schedule",
+        href: "/professional/Schedule",
         label: "My Schedule",
       },
       {
         label: "Profile",
-        href: "/professional/profile",
+        href: "/professional/Profile",
       },
     );
   }
