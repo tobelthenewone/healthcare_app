@@ -1,9 +1,17 @@
 "use client";
-import axios from "axios";
+
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+
+import PageHeader from "@/components/ui/page-header";
+import LoadingState from "@/components/ui/loading-state";
+
 import consultationService from "@/services/consultationService";
-import { Consultation, CreateConsultationRequest } from "@/types/consultation";
+
+import {
+  Consultation,
+  CreateConsultationRequest,
+} from "@/types/consultation";
 
 export default function ConsultationPage() {
   const params = useParams();
@@ -13,27 +21,36 @@ export default function ConsultationPage() {
 
   const [loading, setLoading] = useState(true);
 
-  const [consultation, setConsultation] = useState<Consultation | null>(null);
+  const [saving, setSaving] = useState(false);
 
-  const [form, setForm] = useState<CreateConsultationRequest>({
-    diagnosis: "",
-    prescription: "",
-    recommendations: "",
-    notes: "",
-  });
+  const [consultation, setConsultation] =
+    useState<Consultation | null>(null);
+
+  const [form, setForm] =
+    useState<CreateConsultationRequest>({
+      diagnosis: "",
+      prescription: "",
+      recommendations: "",
+      notes: "",
+    });
 
   useEffect(() => {
-    const initialize = async () => {
+    async function initialize() {
       try {
         const result =
-          await consultationService.consultationExists(appointmentId);
+          await consultationService.consultationExists(
+            appointmentId,
+          );
 
         if (!result.exists) {
           setLoading(false);
           return;
         }
 
-        const data = await consultationService.getByAppointment(appointmentId);
+        const data =
+          await consultationService.getByAppointment(
+            appointmentId,
+          );
 
         setConsultation(data);
 
@@ -48,112 +65,170 @@ export default function ConsultationPage() {
       } finally {
         setLoading(false);
       }
-    };
+    }
 
     initialize();
   }, [appointmentId]);
 
   async function save() {
     try {
+      setSaving(true);
+
       if (consultation) {
-        await consultationService.update(consultation.id, form);
+        await consultationService.update(
+          consultation.id,
+          form,
+        );
       } else {
-        await consultationService.create(appointmentId, form);
+        await consultationService.create(
+          appointmentId,
+          form,
+        );
       }
 
-      alert("Consultation saved.");
-
-      router.push("/professional");
+      router.push("/professional/dashboard");
       router.refresh();
     } catch (error) {
       console.error(error);
 
       alert("Failed to save consultation.");
+    } finally {
+      setSaving(false);
     }
   }
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <LoadingState label="Loading consultation..." />
+    );
   }
 
+  const fields = [
+    {
+      label: "Diagnosis",
+      key: "diagnosis",
+      rows: 4,
+      placeholder:
+        "Enter diagnosis...",
+    },
+    {
+      label: "Prescription",
+      key: "prescription",
+      rows: 4,
+      placeholder:
+        "Medications, dosage and duration...",
+    },
+    {
+      label: "Recommendations",
+      key: "recommendations",
+      rows: 4,
+      placeholder:
+        "Lifestyle changes, follow-up advice...",
+    },
+    {
+      label: "Clinical Notes",
+      key: "notes",
+      rows: 6,
+      placeholder:
+        "Additional consultation notes...",
+    },
+  ] as const;
+
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-xl shadow p-6">
-      <h1 className="text-3xl font-bold mb-6">
-        {consultation ? "Edit Consultation" : "New Consultation"}
-      </h1>
+    <div>
 
-      <div className="space-y-5">
-        <div>
-          <label className="block mb-2 font-medium">Diagnosis</label>
+      <PageHeader
+        eyebrow="Medical Record"
+        title={
+          consultation
+            ? "Edit Consultation"
+            : "New Consultation"
+        }
+        subtitle="Complete the patient's consultation record."
+      />
 
-          <textarea
-            className="w-full border rounded-lg p-3"
-            rows={4}
-            value={form.diagnosis}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                diagnosis: e.target.value,
-              })
-            }
-          />
+      <div className="space-y-6">
+
+        {fields.map((field) => (
+
+          <div
+            key={field.key}
+            className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6"
+          >
+
+            <label className="block text-sm font-semibold uppercase tracking-wider text-slate-600 mb-3">
+
+              {field.label}
+
+            </label>
+
+            <textarea
+              rows={field.rows}
+              placeholder={field.placeholder}
+              value={form[field.key]}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  [field.key]:
+                    e.target.value,
+                })
+              }
+              className="
+                w-full
+                rounded-2xl
+                border
+                border-slate-200
+                bg-slate-50
+                px-4
+                py-3
+                text-slate-900
+                focus:outline-none
+                focus:ring-2
+                focus:ring-emerald-500/20
+                focus:border-emerald-500
+                transition-all
+                resize-none
+              "
+            />
+
+          </div>
+
+        ))}
+
+        <div className="flex justify-end">
+
+          <button
+            onClick={save}
+            disabled={saving}
+            className="
+              px-7
+              py-3
+              rounded-xl
+              font-semibold
+              text-white
+              shadow-lg
+              transition-all
+              active:scale-[0.98]
+              disabled:opacity-50
+              disabled:cursor-not-allowed
+              bg-gradient-to-r
+              from-emerald-600
+              to-teal-500
+              hover:from-emerald-500
+              hover:to-teal-400
+            "
+          >
+            {saving
+              ? "Saving..."
+              : consultation
+                ? "Update Consultation"
+                : "Save Consultation"}
+          </button>
+
         </div>
 
-        <div>
-          <label className="block mb-2 font-medium">Prescription</label>
-
-          <textarea
-            className="w-full border rounded-lg p-3"
-            rows={4}
-            value={form.prescription}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                prescription: e.target.value,
-              })
-            }
-          />
-        </div>
-
-        <div>
-          <label className="block mb-2 font-medium">Recommendations</label>
-
-          <textarea
-            className="w-full border rounded-lg p-3"
-            rows={4}
-            value={form.recommendations}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                recommendations: e.target.value,
-              })
-            }
-          />
-        </div>
-
-        <div>
-          <label className="block mb-2 font-medium">Notes</label>
-
-          <textarea
-            className="w-full border rounded-lg p-3"
-            rows={6}
-            value={form.notes}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                notes: e.target.value,
-              })
-            }
-          />
-        </div>
-
-        <button
-          onClick={save}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg"
-        >
-          {consultation ? "Update Consultation" : "Save Consultation"}
-        </button>
       </div>
+
     </div>
   );
 }
