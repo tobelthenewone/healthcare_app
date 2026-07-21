@@ -132,7 +132,7 @@ export default function Sidebar() {
   if (isAdmin(user?.role)) {
     links.push(
       {
-        href: "/admin",
+        href: "/dashboard",
         label: "Admin Dashboard",
         icon: icons.grid,
       },
