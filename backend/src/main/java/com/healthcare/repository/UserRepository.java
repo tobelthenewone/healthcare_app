@@ -1,4 +1,5 @@
 package com.healthcare.repository;
+
 import com.healthcare.model.User;
 import com.healthcare.model.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,5 +10,10 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
+
     List<User> findByRole(UserRole role);
+
+    long countByRole(UserRole role);
+
+    long count();
 }

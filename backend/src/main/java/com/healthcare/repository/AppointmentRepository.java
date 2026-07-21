@@ -56,4 +56,15 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long>,
                         Pageable pageable);
 
         List<Appointment> findAllByStatus(AppointmentStatus status);
+
+        long countByPatientAndStatus(User patient, AppointmentStatus status);
+
+        long countByProfessionalAndStatus(User professional, AppointmentStatus status);
+
+        long countByProfessionalAndAppointmentTimeBetween(
+                        User professional,
+                        Instant start,
+                        Instant end);
+
+        long count();
 }
