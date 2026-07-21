@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import com.healthcare.dto.UpdateProfessionalScheduleRequest;
 import com.healthcare.security.CustomUserDetails;
 import com.healthcare.dto.AppointmentResponse;
+import com.healthcare.dto.ProfessionalDashboardResponse;
 import com.healthcare.dto.ProfessionalProfileUpdateRequest;
 import com.healthcare.dto.ProfessionalProfileResponse;
 import com.healthcare.dto.ProfessionalScheduleResponse;
@@ -38,7 +39,14 @@ public class ProfessionalController {
         this.appointmentService = appointmentService;
         this.professionalScheduleService = professionalScheduleService;
     }
+    @PreAuthorize("hasRole('PROFESSIONAL')")
+    @GetMapping("/dashboard")
+    public ProfessionalDashboardResponse getDashboard(
+            @AuthenticationPrincipal CustomUserDetails user) {
 
+        return userService.getProfessionalDashboard(user.getUser());
+    }
+    @PreAuthorize("hasRole('PROFESSIONAL')")
     @GetMapping("/schedule")
     public ResponseEntity<List<ProfessionalScheduleResponse>> getMySchedule(
             Authentication authentication) {
@@ -66,14 +74,9 @@ public class ProfessionalController {
         return ResponseEntity.ok(appointments);
     }
 
-    @PreAuthorize("hasRole('PROFESSIONAL')")
-    @GetMapping("/dashboard")
-    public String professionalDashboard() {
-        return "Professional dashboard";
-    }
+
 
     // Secure endpoint (REAL data access)
-    @PreAuthorize("hasRole('PROFESSIONAL')")
     @GetMapping("/me")
     public String getMyData(@AuthenticationPrincipal CustomUserDetails user) {
         return "Fetching data for user ID: " + user.getId();

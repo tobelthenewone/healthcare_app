@@ -21,6 +21,7 @@ import com.healthcare.dto.AppointmentResponse;
 import com.healthcare.dto.AvailableSlotResponse;
 import com.healthcare.dto.BookAppointmentRequest;
 import com.healthcare.dto.ChangePasswordRequest;
+import com.healthcare.dto.PatientDashboardResponse;
 import com.healthcare.dto.PatientProfileResponse;
 import com.healthcare.dto.UpdatePatientProfileRequest;
 
@@ -35,11 +36,12 @@ public class PatientController {
     // Dashboard (UI-style message)
     @PreAuthorize("hasRole('PATIENT')")
     @GetMapping("/dashboard")
-    public String patientDashboard(@AuthenticationPrincipal CustomUserDetails user) {
-        return "Welcome Patient: " + user.getFullName();
+    public PatientDashboardResponse getDashboard(
+            @AuthenticationPrincipal CustomUserDetails user) {
+
+        return userService.getPatientDashboard(user.getUser());
     }
 
-    @PreAuthorize("hasRole('PATIENT')")
     @GetMapping("/appointments")
     public ResponseEntity<List<AppointmentResponse>> getMyAppointments(
             Authentication authentication) {

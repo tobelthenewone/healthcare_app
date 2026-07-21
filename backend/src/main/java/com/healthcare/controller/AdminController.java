@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.healthcare.dto.UserProfileResponse;
 import com.healthcare.service.AdminService;
 import com.healthcare.service.ProfessionalScheduleService;
+import com.healthcare.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +24,7 @@ import com.healthcare.dto.AppointmentResponse;
 import com.healthcare.dto.PagedResponse;
 import com.healthcare.model.AppointmentStatus;
 import com.healthcare.service.AppointmentService;
+import com.healthcare.dto.AdminDashboardResponse;
 import com.healthcare.dto.AppointmentFilterRequest;
 
 @RestController
@@ -33,11 +35,13 @@ public class AdminController {
     private final AdminService adminService;
     private final ProfessionalScheduleService professionalScheduleService;
     private final AppointmentService appointmentService;
+    private final UserService userService;
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/dashboard")
-    public String adminDashboard(@AuthenticationPrincipal UserDetails userDetails) {
-        return "Welcome Admin: " + userDetails.getUsername();
+    public AdminDashboardResponse getDashboard() {
+
+        return userService.getAdminDashboard();
     }
 
     // Get all users
