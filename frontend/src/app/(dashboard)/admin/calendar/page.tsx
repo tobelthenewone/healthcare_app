@@ -221,8 +221,9 @@ export default function AdminCalendarPage() {
           color: rgb(15 23 42);
           border-radius: 0.75rem;
         }
-        .dark .react-calendar__navigation button {
-          color: rgb(241 245 249);
+        .react-calendar__navigation button {
+          color: #ffffff !important;
+          background: transparent !important;
         }
         .react-calendar__navigation button:enabled:hover,
         .react-calendar__navigation button:enabled:focus {
