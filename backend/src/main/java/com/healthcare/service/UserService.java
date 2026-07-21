@@ -14,7 +14,16 @@ import com.healthcare.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.healthcare.dto.AdminDashboardResponse;
+import com.healthcare.dto.PatientDashboardResponse;
+import com.healthcare.dto.ProfessionalDashboardResponse;
+import com.healthcare.model.AppointmentStatus;
+import com.healthcare.model.UserRole;
+import com.healthcare.repository.AppointmentRepository;
+import com.healthcare.repository.ConsultationRecordRepository;
 
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.time.Instant;
 import java.util.List;
 
@@ -22,6 +31,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
+    private final AppointmentRepository appointmentRepository;
+
+    private final ConsultationRecordRepository consultationRecordRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -159,5 +171,61 @@ public class UserService {
         userRepository.save(user);
 
         return toPatientProfile(user);
+    }
+
+    public PatientDashboardResponse getPatientDashboard(User patient) {
+
+        return new PatientDashboardResponse(
+                appointmentRepository.countByPatientAndStatus(
+                        patient,
+                        AppointmentStatus.PENDING)
+                        +
+                        appointmentRepository.countByPatientAndStatus(
+                                patient,
+                                AppointmentStatus.CONFIRMED),
+
+                appointmentRepository.countByPatientAndStatus(
+                        patient,
+                        AppointmentStatus.COMPLETED),
+
+                consultationRecordRepository.countByAppointmentPatientId(
+                        patient.getId()));
+    }
+
+    public ProfessionalDashboardResponse getProfessionalDashboard(User professional) {
+
+        Instant startOfDay = LocalDate.now()
+                .atStartOfDay()
+                .toInstant(ZoneOffset.UTC);
+
+        Instant endOfDay = startOfDay.plusSeconds(86400);
+
+        return new ProfessionalDashboardResponse(
+
+                appointmentRepository.countByProfessionalAndAppointmentTimeBetween(
+                        professional,
+                        startOfDay,
+                        endOfDay),
+
+                appointmentRepository.countByProfessionalAndStatus(
+                        professional,
+                        AppointmentStatus.PENDING),
+
+                appointmentRepository.countByProfessionalAndStatus(
+                        professional,
+                        AppointmentStatus.COMPLETED));
+    }
+
+    public AdminDashboardResponse getAdminDashboard() {
+
+        return new AdminDashboardResponse(
+
+                userRepository.count(),
+
+                userRepository.countByRole(UserRole.PATIENT),
+
+                userRepository.countByRole(UserRole.PROFESSIONAL),
+
+                appointmentRepository.count());
     }
 }
