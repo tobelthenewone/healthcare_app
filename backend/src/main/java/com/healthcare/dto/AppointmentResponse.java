@@ -15,7 +15,6 @@ public class AppointmentResponse {
 
     private Long patientId;
     private String patientName;
-
     private Long professionalId;
     private String professionalName;
 
