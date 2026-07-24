@@ -149,7 +149,7 @@ export default function LoginPage() {
 
             <div className="text-center lg:text-left mb-8">
               <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                Welcome back
+                Welcome
               </h2>
               <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm">
                 Please enter your credentials to access your workspace
