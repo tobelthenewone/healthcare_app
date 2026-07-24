@@ -67,4 +67,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long>,
                         Instant end);
 
         long count();
+
+        long countByStatus(AppointmentStatus status);
+
+        List<Appointment> findTop5ByOrderByAppointmentTimeDesc();
 }
