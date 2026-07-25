@@ -2,6 +2,7 @@ package com.healthcare.service;
 
 import com.healthcare.dto.UserProfileResponse;
 import com.healthcare.model.User;
+import com.healthcare.repository.AppointmentRepository;
 import com.healthcare.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.util.List;
 public class AdminService {
 
     private final UserRepository userRepository;
+    private final AppointmentRepository appointmentRepository;
 
     // 1. Get all users
     public List<UserProfileResponse> getAllUsers() {
