@@ -49,3 +49,5 @@ coverage/
 # Docker
 *.pid
 docker-compose.override.yml
+
+*.yaml
