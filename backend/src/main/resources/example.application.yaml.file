@@ -1,0 +1,66 @@
+spring:
+  mail:
+    host: preferred_host
+    port: preferred_port
+    username: example@gmail.com
+    password: example_password
+    protocol: preferred_protocol
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+            trust: preferred_trust
+          starttls:
+            enable: false
+        debug: true
+
+  datasource:
+    url: preferred_url
+    driver-class-name: preferred_driver_class_name
+    username: example_username
+    password: example_password
+
+  jpa:
+    database-platform: preferred_dialect
+    hibernate:
+      ddl-auto: preferred_ddl_auto
+    show-sql: preferred_show_sql
+    properties:
+      hibernate:
+        format_sql: preferred_format_sql
+        physical_naming_strategy: preferred_physical_naming_strategy
+
+  h2:
+    console:
+      enabled: preferred_enabled
+      path: /preferred_path
+
+jwt:
+  secret: "example_secret"
+  expiration: preferred_expiration
+server:
+  port: preferred_port
+  error:
+    include-message: always
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+      springframework:
+        security: DEBUG
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    mappings:
+      enabled: true
