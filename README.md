@@ -326,8 +326,13 @@ GET /api/admin/appointments/filter
 <img width="959" height="444" alt="image" src="https://github.com/user-attachments/assets/97d528ed-ae8d-4245-8a57-03bc3b0abecb" />
 # Professional
 <img width="959" height="449" alt="image" src="https://github.com/user-attachments/assets/bae50f8b-5869-4a5c-b96d-241e1ed64d28" />
-
-*(More To be added soon)*
+<img width="1918" height="895" alt="image" src="https://github.com/user-attachments/assets/259057da-5987-4372-991a-eb3de88b8011" />
+<img width="959" height="443" alt="image" src="https://github.com/user-attachments/assets/52414eb5-026b-4229-88bf-64b42876c119" />
+# Patient
+<img width="959" height="449" alt="image" src="https://github.com/user-attachments/assets/bc6d423f-26ce-474c-bf29-34649cde56ff" />
+<img width="959" height="458" alt="image" src="https://github.com/user-attachments/assets/8ef15e84-cb0d-4c4f-9e8f-840a7798ba7a" />
+# Login and Register
+<img width="959" height="446" alt="image" src="https://github.com/user-attachments/assets/861bf8f9-9f92-4da7-a527-c42a0e92bb28" />
 
 - Login
 - Register
