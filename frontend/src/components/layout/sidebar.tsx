@@ -117,7 +117,7 @@ export default function Sidebar() {
         icon: icons.grid,
       },
       {
-        href: "/professional/schedule",
+        href: "/professional/schedule-temp",
         label: "My Schedule",
         icon: icons.calendar,
       },
