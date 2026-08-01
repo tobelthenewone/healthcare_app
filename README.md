@@ -8,6 +8,8 @@ A full-stack healthcare appointment management platform built with **Spring Boot
 
 This project demonstrates a production-style architecture with secure authentication, role-based authorization, appointment scheduling, consultation management, and an administrative dashboard.
 
+**(Video demo link at the bottom of this ReadMe)**
+
 The application is designed around three user roles:
 
 - **Patient**
@@ -320,6 +322,7 @@ GET /api/admin/appointments/filter
 ---
 
 # Screenshots
+
 # Admin
 <img width="959" height="446" alt="image" src="https://github.com/user-attachments/assets/9adf1914-3e25-450d-af2f-c2f7dd1a499b" />
 <img width="959" height="431" alt="image" src="https://github.com/user-attachments/assets/d6732d67-68b7-4dc6-b3a4-3d4d624e363c" />
@@ -436,5 +439,8 @@ This project demonstrates experience with:
 - API Integration
 - Responsive UI Design
 - Modern TypeScript Development
+---
+
+Video demo link https://youtu.be/Tcs1Vuf5Vhk
 
 ---
