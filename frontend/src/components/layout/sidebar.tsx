@@ -112,10 +112,16 @@ export default function Sidebar() {
   if (isProfessional(user?.role)) {
     links.push(
       {
-        href: "/professional/dashboard-temp",
+        href: "/dashboard",
         label: "Dashboard",
         icon: icons.grid,
       },
+      {
+        href: "/professional/dashboard-temp",
+        label: "Appointment Lists",
+        icon: icons.grid,
+      },
+
       {
         href: "/professional/schedule-temp",
         label: "My Schedule",
