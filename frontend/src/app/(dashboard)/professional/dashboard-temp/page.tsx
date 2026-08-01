@@ -55,7 +55,7 @@ export default function ProfessionalPage() {
       <div>
         <PageHeader
           eyebrow="Appointments"
-          title="Professional Dashboard"
+          title="Appointment Lists"
           subtitle="Manage appointments, update statuses, and complete consultations."
         />
 
