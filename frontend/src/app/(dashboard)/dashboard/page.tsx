@@ -204,7 +204,7 @@ export default function DashboardPage() {
           <ActionCard
             title="Dashboard"
             subtitle="View today's appointments"
-            href="/professional/Dashboard"
+            href="/professional/dashboard-temp"
             icon={<CalendarDays size={22} />}
           />
 
